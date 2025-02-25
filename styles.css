@@ -212,3 +212,48 @@
   border-radius: 5px;
   cursor: pointer;
 }
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh; /* Limit height to 80% of viewport height */
+}
+
+.modal-header {
+  flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.modal-body, #seed-list, #inventory-list, #shop-list {
+  max-height: 60vh; /* Allow this to scroll */
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* Custom scrollbar for Firefox */
+.modal-body, #seed-list, #inventory-list, #shop-list {
+  scrollbar-width: thin;
+  scrollbar-color: #4CAF50 #f0f0f0;
+}
+
+/* Custom scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+.modal-body::-webkit-scrollbar,
+#seed-list::-webkit-scrollbar,
+#inventory-list::-webkit-scrollbar,
+#shop-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track,
+#seed-list::-webkit-scrollbar-track,
+#inventory-list::-webkit-scrollbar-track,
+#shop-list::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+.modal-body::-webkit-scrollbar-thumb,
+#seed-list::-webkit-scrollbar-thumb,
+#inventory-list::-webkit-scrollbar-thumb,
+#shop-list::-webkit-scrollbar-thumb {
+  background-color: #4CAF50;
+  border-radius: 4px;
+}
