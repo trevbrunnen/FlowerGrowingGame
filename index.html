@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flower Breeding Game</title>
+  <link rel="stylesheet" href="styles.css">
+// </head>
+<body>
+  <div id="game-container">
+    <div id="header">
+      <div id="score">Score: 0</div>
+      <div id="money">Money: $100</div>
+    </div>
+    
+    <div id="flower-plots">
+      <div class="flower-plot" id="plot1">
+        <div class="plot-label">Flower 1</div>
+        <div class="progress-bar" id="progress-plot1"></div>
+      </div>
+      <div class="flower-plot" id="plot2">
+        <div class="plot-label">Flower 2</div>
+        <div class="progress-bar" id="progress-plot2"></div>
+      </div>
+    </div>
+    
+    <div id="breeding-plot">
+      <div class="plot-label">Breed Flower</div>
+      <div class="progress-bar" id="progress-breeding"></div>
+    </div>
+    
+    <div id="bottom-panel">
+      <div id="inventory-button">Inventory</div>
+      <div id="shop-button">Shop</div>
+    </div>
+    
+    <div id="seed-menu" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Select a seed to plant</h2>
+          <span class="close-button">&times;</span>
+        </div>
+        <div class="modal-body" id="seed-list">
+          <!-- Seeds will be populated here -->
+        </div>
+      </div>
+    </div>
+    
+    <div id="harvest-menu" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Harvest flower?</h2>
+        </div>
+        <div class="modal-body">
+          <button id="harvest-yes" class="confirm-button">✓</button>
+          <button id="harvest-no" class="cancel-button">✗</button>
+        </div>
+      </div>
+    </div>
+    
+    <div id="shop-menu" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Shop</h2>
+          <span class="close-button">&times;</span>
+        </div>
+        <div class="modal-body" id="shop-list">
+          <!-- Shop items will be populated here -->
+        </div>
+      </div>
+    </div>
+    
+    <div id="inventory-menu" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Inventory</h2>
+          <span class="close-button">&times;</span>
+        </div>
+        <div class="modal-body" id="inventory-list">
+          <!-- Inventory items will be populated here -->
+        </div>
+      </div>
+    </div>
+    
+    <div id="notification" class="notification">
+      <div class="notification-content">
+        <p id="notification-text"></p>
+        <button id="notification-close">OK</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="game.js"></script>
+</body>
+</html>
