@@ -1,0 +1,25 @@
+{
+  "name": "FlowerGrowingGame",
+  "version": "1.0.0",
+  "description": "Flower growing game made as a test of Claude 3.7.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trevbrunnen/FlowerGrowingGame.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/trevbrunnen/FlowerGrowingGame/issues"
+  },
+  "homepage": "https://github.com/trevbrunnen/FlowerGrowingGame#readme",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {}
+}

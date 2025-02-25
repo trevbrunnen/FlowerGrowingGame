@@ -35,10 +35,19 @@ class Game {
     this.score = 0;
     this.money = 100;
     this.inventory = [];
+    this.growthInterval = 100; // Default growth interval in ms
+    this.breedingInterval = 100; // Default breeding interval in ms
+    this.breedingQualityBonus = 0; // Starts at 0, each upgrade increases by 1
+    this.breedingQualityUpgrades = 0; // Count how many upgrades purchased (max 20)
     this.seeds = [
       { id: 'red_seed', name: 'Red Seed', red: 125, green: 0, blue: 0, cost: 10 },
       { id: 'green_seed', name: 'Green Seed', red: 0, green: 125, blue: 0, cost: 10 },
       { id: 'blue_seed', name: 'Blue Seed', red: 0, green: 0, blue: 125, cost: 10 }
+    ];
+    
+    this.shopItems = [
+      { id: 'growth_accelerator', name: 'Growth Accelerator', description: 'Reduces growth time by 5ms', cost: 5000, type: 'upgrade' },
+      { id: 'breeding_quality', name: 'Breeding Enhancer', description: 'Improves breeding results by shifting random range up by 1', cost: 1000, type: 'upgrade', maxPurchases: 20 }
     ];
     
     this.plots = {
@@ -242,7 +251,7 @@ class Game {
         progressBar.style.display = 'none';
         plot.growing = false;
       }
-    }, 100); // Growth speed - adjust as needed
+    }, this.growthInterval); // Use the class variable for growth speed
   }
   
   harvestFlower(confirmed) {
@@ -299,7 +308,12 @@ class Game {
         const parent2 = this.plots.plot2.flower;
         
         // Base stats are average of parents with a random modifier
-        const randomMod = () => Math.floor(Math.random() * 41) - 20; // -20 to +20
+        // Apply breeding quality bonus to shift the random range up
+        const randomMod = () => {
+          const min = -20 + this.breedingQualityBonus;
+          const max = 20 + this.breedingQualityBonus;
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        };
         
         const newRed = Math.min(255, Math.max(0, Math.floor((parent1.red + parent2.red) / 2) + randomMod()));
         const newGreen = Math.min(255, Math.max(0, Math.floor((parent1.green + parent2.green) / 2) + randomMod()));
@@ -319,13 +333,14 @@ class Game {
         this.score++;
         this.updateUI();
       }
-    }, 100); // Breeding speed - adjust as needed
+    }, this.breedingInterval); // Use the class variable for breeding speed
   }
   
   openShop() {
     const shopList = document.getElementById('shop-list');
     shopList.innerHTML = '';
     
+    // Display seeds
     this.seeds.forEach(seed => {
       const shopItem = document.createElement('div');
       shopItem.className = 'shop-item';
@@ -335,7 +350,7 @@ class Game {
           <div>${seed.name}</div>
           <div>R:${seed.red} G:${seed.green} B:${seed.blue}</div>
         </div>
-        <div class="seed-cost">$${seed.cost}</div>
+        <div class="seed-cost">${seed.cost}</div>
       `;
       
       if (this.money >= seed.cost) {
@@ -347,7 +362,69 @@ class Game {
       shopList.appendChild(shopItem);
     });
     
+    // Add a separator
+    const separator = document.createElement('div');
+    separator.className = 'shop-separator';
+    separator.innerHTML = '<hr><h3>Upgrades</h3>';
+    shopList.appendChild(separator);
+    
+    // Display special items/upgrades
+    this.shopItems.forEach(item => {
+      const shopItem = document.createElement('div');
+      shopItem.className = 'shop-item';
+      shopItem.innerHTML = `
+        <div class="item-icon">🚀</div>
+        <div class="item-info">
+          <div>${item.name}</div>
+          <div>${item.description}</div>
+        </div>
+        <div class="item-cost">${item.cost}</div>
+      `;
+      
+      if (this.money >= item.cost) {
+        shopItem.addEventListener('click', () => this.buyShopItem(item));
+      } else {
+        shopItem.classList.add('disabled');
+      }
+      
+      shopList.appendChild(shopItem);
+    });
+    
     this.shopMenu.style.display = 'block';
+  }
+  
+  buyShopItem(item) {
+    if (this.money >= item.cost) {
+      if (item.id === 'growth_accelerator') {
+        // Apply the growth accelerator
+        this.money -= item.cost;
+        this.growthInterval = Math.max(20, this.growthInterval - 5); // Don't go below 20ms
+        this.breedingInterval = Math.max(20, this.breedingInterval - 5); // Also reduce breeding time
+        
+        this.showNotification(`Growth speeds increased! New growth time: ${this.growthInterval}ms`);
+        
+        // Update shop to reflect new prices and available money
+        this.updateUI();
+        this.openShop();
+      }
+      else if (item.id === 'breeding_quality') {
+        // Check if max purchases reached
+        if (this.breedingQualityUpgrades < item.maxPurchases) {
+          this.money -= item.cost;
+          this.breedingQualityBonus += 1;
+          this.breedingQualityUpgrades += 1;
+          
+          const remaining = item.maxPurchases - this.breedingQualityUpgrades;
+          this.showNotification(`Breeding quality improved! Random range is now [${-20 + this.breedingQualityBonus}, ${20 + this.breedingQualityBonus}]. ${remaining} upgrades remaining.`);
+          
+          // Update shop
+          this.updateUI();
+          this.openShop();
+        } else {
+          this.showNotification("Maximum level reached for Breeding Enhancer!");
+        }
+      }
+    }
   }
   
   buySeed(seed) {
